@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
@@ -32,10 +31,8 @@ func main() {
 	ch := make(chan struct{})
 	informer := informers.NewSharedInformerFactory(clientset, 10*time.Minute)
 	c := newController(clientset, informer.Apps().V1().Deployments())
-	//informer.Start(ch)
-	//c.run(ch)
-	_ = ch
-	_ = c
+	informer.Start(ch)
+	c.run(ch)
 
-	fmt.Println(informer)
+	//fmt.Println(informer)
 }

@@ -32,10 +32,8 @@ func main() {
 	ch := make(chan struct{})
 	informer := informers.NewSharedInformerFactory(clientset, 10*time.Minute)
 	c := newController(clientset, informer.Apps().V1().Deployments())
-	//informer.Start(ch)
-	//c.run(ch)
-	_ = ch
-	_ = c
-
-	fmt.Println(informer)
+	informer.Start(ch)
+	c.run(ch)
+	
+	fmt.Println("Successfully Exited")
 }

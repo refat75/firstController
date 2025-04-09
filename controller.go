@@ -19,20 +19,20 @@ type controller struct {
 }
 
 func newController(clientset kubernetes.Interface, depInformer appsinformers.DeploymentInformer) *controller {
-	//c := &controller{
-	//	clientset:      clientset,
-	//	depLister:      depInformer.Lister(),
-	//	depCacheSynced: depInformer.Informer().HasSynced,
-	//	queue:          workqueue.NewTypedRateLimitingQueue[string](workqueue.DefaultTypedControllerRateLimiter[string]()),
-	//}
-	//depInformer.Informer().AddEventHandler(
-	//	cache.ResourceEventHandlerFuncs{
-	//		AddFunc:    handleAdd,
-	//		DeleteFunc: handleDel,
-	//	},
-	//)
+	c := &controller{
+		clientset:      clientset,
+		depLister:      depInformer.Lister(),
+		depCacheSynced: depInformer.Informer().HasSynced,
+		queue:          workqueue.NewTypedRateLimitingQueue[string](workqueue.DefaultTypedControllerRateLimiter[string]()),
+	}
+	depInformer.Informer().AddEventHandler(
+		cache.ResourceEventHandlerFuncs{
+			AddFunc:    handleAdd,
+			DeleteFunc: handleDel,
+		},
+	)
 	fmt.Println("New controller Called")
-	return nil
+	return c
 }
 
 func (c *controller) run(stopCh <-chan struct{}) {
